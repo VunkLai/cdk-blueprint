@@ -1,0 +1,17 @@
+{
+  "files.exclude": {
+    ".pytest_cache": true
+  },
+  "python.linting.pylintArgs": [
+    // defualt
+    "--disable=C0114",
+    "--disable=C0115",
+    "--disable=C0116",
+    "--disable=E1101",
+    "--disable=invalid-name",
+    // project
+    "--disable=no-name-in-module", // for constructs
+    "--disable=too-few-public-methods", // for all constructs
+    "--disable=wrong-import-order" // imports sorting manager is isort
+  ]
+}
