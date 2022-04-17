@@ -1,4 +1,4 @@
-from aws_cdk import Stack
+import aws_cdk as cdk
 from constructs import Construct
 
 import attrs
@@ -7,7 +7,7 @@ import attrs
 @attrs.define
 class Infrastructure:
 
-    scope: Stack
+    scope: cdk.Stack
     id: str = attrs.field(converter=str, validator=attrs.validators.instance_of(str))
 
     @property

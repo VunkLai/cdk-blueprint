@@ -20,6 +20,7 @@ class VpcTestCase(TestCase):
         # Then
         self.assertEqual(blueprint.scope, self.stack)
         self.assertEqual(blueprint.id, 'vpc')
+        self.assertEqual(blueprint.cidr, '10.0.0.0/16')
 
     def test_construct(self):
         # When
@@ -31,3 +32,20 @@ class VpcTestCase(TestCase):
 
         template = assertions.Template.from_stack(self.stack)
         template.has_resource("AWS::EC2::VPC", {})
+        template.resource_count_is("AWS::EC2::VPC", 1)
+
+    def test_build_vpc_with_cidr(self):
+        # Given
+        cidr = '10.0.1.0/24'
+
+        # When
+        blueprint = Vpc(self.stack, 'vpc')
+        blueprint.build(cidr=cidr)
+
+        # Then
+        self.assertEqual(blueprint.cidr, cidr)
+
+        template = assertions.Template.from_stack(self.stack)
+        template.has_resource_properties("AWS::EC2::VPC", {
+            "CidrBlock": cidr
+        })
