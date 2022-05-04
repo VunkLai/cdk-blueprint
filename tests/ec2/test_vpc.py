@@ -59,3 +59,44 @@ class VpcTestCase(TestCase):
 
         self.assertTrue(hasattr(Vpc, 'from_lookup'))
         self.assertTrue(callable(getattr(Vpc, 'from_lookup')))
+
+    def test_vpc_should_handle_an_empty_subnet_configuration_correctly(self):
+        vpc = Vpc(self.stack, 'vpc')
+        vpc.build()
+
+        template = assertions.Template.from_stack(self.stack)
+        # (public + private) * azs
+        template.resource_count_is("AWS::EC2::Subnet", 0)
+
+    def test_vpc_should_handle_correctly_without_subnet_configuration(self):
+        vpc = Vpc(self.stack, 'vpc')
+        vpc.subnet_configuration = None  # use CDK default
+        vpc.build()
+
+        template = assertions.Template.from_stack(self.stack)
+        template.resource_count_is("AWS::EC2::Subnet", 2)
+
+    def test_vpc_should_handle_max_azs_correctly(self):
+        vpc = Vpc(self.stack, 'vpc')
+        vpc.build(subnet_configuration=None)  # subnets is default -> public + private
+
+        self.assertEqual(vpc.max_azs, 1)
+
+        template = assertions.Template.from_stack(self.stack)
+        # (public + private) * azs
+        template.resource_count_is("AWS::EC2::Subnet", 2)
+
+    def test_vpc_should_handle_an_invalid_max_azs_correctly(self):
+        for max_azs in [-1, 999]:
+            with self.subTest(max_azs=max_azs):
+
+                with self.assertRaises(ValueError):
+                    vpc = Vpc(self.stack, 'vpc', max_azs=max_azs)
+
+                with self.assertRaises(ValueError):
+                    vpc = Vpc(self.stack, 'vpc')
+                    vpc.max_azs = max_azs
+
+                with self.assertRaises(ValueError):
+                    vpc = Vpc(self.stack, 'vpc')
+                    vpc.build(subnet_configuration=None, max_azs=max_azs)
