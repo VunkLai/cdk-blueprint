@@ -49,3 +49,13 @@ class VpcTestCase(TestCase):
         template.has_resource_properties("AWS::EC2::VPC", {
             "CidrBlock": cidr
         })
+
+    def test_build_vpc_from_lookup(self):
+        # Tests no specifying the env property at all.
+
+        # You can't write code like `if (stack.region == 'us-east-1')`
+        # of use framework facilities like `Vpc.from_lookup`,
+        # which need to query you AWS account
+
+        self.assertTrue(hasattr(Vpc, 'from_lookup'))
+        self.assertTrue(callable(getattr(Vpc, 'from_lookup')))

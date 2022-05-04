@@ -19,3 +19,6 @@ class Vpc(Infrastructure):
         for key, val in kwargs.items():
             setattr(self, key, val)
         return ec2.Vpc(**self.kwargs)
+
+    def from_lookup(self, vpc_id: str) -> ec2.Vpc:
+        return ec2.Vpc.from_lookup(self.scope, self.id, vpc_id=vpc_id)
