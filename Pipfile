@@ -13,6 +13,9 @@ autopep8 = "*"
 pylint = "*"
 pytest = "*"
 ipython = "*"
+twine = "*"
+bandit = "*"
+safety = "*"
 
 [requires]
 python_version = "3.8"
