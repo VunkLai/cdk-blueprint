@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 from aws_cdk import aws_ec2 as ec2
 
 import attrs
-import attrs.validators as validators
+from attrs import validators
 
 from blueprint import Infrastructure
 
@@ -35,7 +35,6 @@ class Vpc(Infrastructure):
     )
 
     def build(self, **kwargs) -> ec2.Vpc:
-        print(self.scope.availability_zones)
         for key, val in kwargs.items():
             setattr(self, key, val)
         return ec2.Vpc(**self.kwargs)
